@@ -17,7 +17,7 @@
             colors: {
               primary: "#19264bff", // dark blue
               secondary: "#4f545fff", // grey
-              accent: "#d43737ff", // red
+              accent: "#e92e2eff", // red
             },
           },
         },

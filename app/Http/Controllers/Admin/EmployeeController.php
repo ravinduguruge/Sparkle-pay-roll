@@ -12,12 +12,12 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = User::where('role', 'employee')->orderBy('name')->get();
-        return view('admin.employees.index', compact('employees'));
+        return view('admin.employees.employee-details', compact('employees'));
     }
 
     public function create()
     {
-        return view('admin.employees.create');
+        return view('admin.employees.employee-add');
     }
 
     public function store(Request $request)
@@ -45,7 +45,7 @@ class EmployeeController extends Controller
 
     public function edit(User $employee)
     {
-        return view('admin.employees.edit', compact('employee'));
+        return view('admin.employees.employee-manage', compact('employee'));
     }
 
     public function update(Request $request, User $employee)

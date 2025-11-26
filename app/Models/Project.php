@@ -10,8 +10,8 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'key_employee_id', 'budget_amount',
-        'remaining_budget', 'description',
+        'name', 'description', 'key_employee_id', 'total_budget',
+        'advance_payment', 'key_employee_amount', 'remaining_budget', 'status',
     ];
 
     public function keyEmployee()
