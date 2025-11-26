@@ -13,14 +13,21 @@ class SalaryController extends Controller
 {
     public function index()
     {
-        $employees = User::where('role', 'employee')->orderBy('name')->get();
-        return view('admin.salary.index', compact('employees'));
+        $employees = User::where('role', 'employee')
+            ->with('salaryMonths')
+            ->orderBy('name')
+            ->get();
+        return view('admin.salary.salary-details', compact('employees'));
     }
 
     public function showEmployee(User $user)
     {
-        $months = $user->salaryMonths()->orderByDesc('year')->orderByDesc('month')->get();
-        return view('admin.salary.employee', compact('user', 'months'));
+        $months = $user->salaryMonths()
+            ->with('payments')
+            ->orderByDesc('year')
+            ->orderByDesc('month')
+            ->get();
+        return view('admin.salary.salary-manage', compact('user', 'months'));
     }
 
     public function storeOrUpdateMonth(Request $request, User $user)

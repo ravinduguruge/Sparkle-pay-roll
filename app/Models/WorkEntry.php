@@ -12,11 +12,11 @@ class WorkEntry extends Model
 
     protected $fillable = [
         'user_id', 'project_id', 'work_date',
-        'job_in_at', 'job_out_at',
-        'job_description', 'partners', 'status',
+        'job_in_time', 'job_out_time', 'total_hours',
+        'description', 'partners', 'status',
     ];
 
-    protected $dates = ['work_date', 'job_in_at', 'job_out_at'];
+    protected $dates = ['work_date', 'job_in_time', 'job_out_time'];
 
     public function user()
     {
