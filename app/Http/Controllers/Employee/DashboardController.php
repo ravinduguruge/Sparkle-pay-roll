@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
         $openWorkEntry = WorkEntry::where('user_id', $user->id)
             ->whereDate('work_date', $today)
-            ->whereNull('job_out_at')
+            ->whereNull('job_out_time')
             ->first();
 
         $projects = Project::orderBy('name')->get();
