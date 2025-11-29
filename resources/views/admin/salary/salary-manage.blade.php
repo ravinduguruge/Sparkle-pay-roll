@@ -34,7 +34,10 @@
         </div>
         <div class="bg-white rounded-lg shadow-md p-4">
             <p class="text-xs text-gray-500 uppercase">Daily Expenses</p>
-            <p class="text-xl font-bold text-gray-900">Rs {{ number_format($user->daily_expenses ?? 0, 2) }}</p>
+            @php
+                $totalDailyExpenses = \App\Models\EmployeeExpense::where('user_id', $user->id)->sum('amount');
+            @endphp
+            <p class="text-xl font-bold text-red-600">- Rs {{ number_format($totalDailyExpenses, 2) }}</p>
         </div>
         <div class="bg-white rounded-lg shadow-md p-4">
             <p class="text-xs text-gray-500 uppercase">Remaining Salary</p>
@@ -137,6 +140,60 @@
                                 <p class="text-lg font-bold text-orange-900">Rs {{ number_format($month->remaining_amount, 2) }}</p>
                             </div>
                         </div>
+
+                        <!-- Daily Expenses & Advances -->
+                        @php
+                            $monthlyExpenses = \App\Models\EmployeeExpense::where('user_id', $user->id)
+                                ->where('year', $month->year)
+                                ->where('month', $month->month)
+                                ->get();
+                        @endphp
+                        @if($monthlyExpenses->count() > 0)
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-gray-800 mb-2">
+                                    <i class="fas fa-receipt text-red-600 mr-2"></i>Daily Expenses & Advances
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-red-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Date</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Type</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Amount</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase">Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            @foreach($monthlyExpenses as $expense)
+                                                <tr>
+                                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                        {{ \Carbon\Carbon::parse($expense->expense_date)->format('M d, Y') }}
+                                                    </td>
+                                                    <td class="px-4 py-2 whitespace-nowrap text-sm">
+                                                        @if($expense->type === 'expense')
+                                                            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Expense</span>
+                                                        @else
+                                                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Advance</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="px-4 py-2 whitespace-nowrap text-sm font-bold text-red-600">
+                                                        - Rs {{ number_format($expense->amount, 2) }}
+                                                    </td>
+                                                    <td class="px-4 py-2 text-sm text-gray-900">{{ $expense->description ?? '-' }}</td>
+                                                </tr>
+                                            @endforeach
+                                            <tr class="bg-red-50 font-semibold">
+                                                <td colspan="2" class="px-4 py-2 text-sm text-right">Total Deducted:</td>
+                                                <td class="px-4 py-2 text-sm font-bold text-red-700">
+                                                    - Rs {{ number_format($monthlyExpenses->sum('amount'), 2) }}
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Add Payment Form -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">

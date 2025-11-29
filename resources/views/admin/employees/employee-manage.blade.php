@@ -85,6 +85,34 @@
                             <p class="text-red-600 text-xs mt-0.5">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Permissions Section -->
+                    <div class="md:col-span-2 mt-4 pt-4 border-t border-slate-200">
+                        <h3 class="text-sm font-semibold text-slate-700 mb-3">Permissions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Can Manage Work -->
+                            <div class="flex items-center">
+                                <input type="checkbox" name="can_manage_work" id="can_manage_work" value="1" 
+                                       {{ old('can_manage_work', $employee->can_manage_work) ? 'checked' : '' }}
+                                       class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                                <label for="can_manage_work" class="ml-2 text-sm text-slate-700">
+                                    <span class="font-medium">Can Manage Work</span>
+                                    <span class="block text-xs text-slate-500">Allow to submit daily work entries</span>
+                                </label>
+                            </div>
+
+                            <!-- Can Add Purchases -->
+                            <div class="flex items-center">
+                                <input type="checkbox" name="can_add_purchases" id="can_add_purchases" value="1" 
+                                       {{ old('can_add_purchases', $employee->can_add_purchases) ? 'checked' : '' }}
+                                       class="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                                <label for="can_add_purchases" class="ml-2 text-sm text-slate-700">
+                                    <span class="font-medium">Can Add Purchases</span>
+                                    <span class="block text-xs text-slate-500">Allow to add company tool purchases</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="flex gap-3 mt-6">

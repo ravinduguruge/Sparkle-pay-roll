@@ -41,9 +41,12 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Employee</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Work Partners</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Project</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Job In</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Job Out</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Travel Start</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Site On</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Site Out</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Travel End</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Hours</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Daily Expenses</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Description</th>
@@ -60,14 +63,40 @@
                                 <div class="text-sm font-medium text-gray-900">{{ $work->user->name }}</div>
                                 <div class="text-xs text-gray-500">{{ $work->user->email }}</div>
                             </td>
+                            <td class="px-6 py-4">
+                                @php
+                                    $partners = is_array($work->work_partners) ? $work->work_partners : [];
+                                @endphp
+                                @if(count($partners) > 0)
+                                    <div class="text-xs text-gray-700">
+                                        @foreach($partners as $partnerId)
+                                            @php
+                                                $partner = \App\Models\User::find($partnerId);
+                                            @endphp
+                                            @if($partner)
+                                                <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mb-1">{{ $partner->name }}</span><br>
+                                            @endif
+                                        @endforeach
+                                        <span class="text-xs text-gray-500">({{ count($partners) }} workers)</span>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-gray-400">Solo</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $work->project->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($work->job_in_time)->format('h:i A') }}</div>
+                                <div class="text-sm text-gray-900">{{ $work->travel_start_time ? \Carbon\Carbon::parse($work->travel_start_time)->format('h:i A') : '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $work->job_out_time ? \Carbon\Carbon::parse($work->job_out_time)->format('h:i A') : 'Not completed' }}</div>
+                                <div class="text-sm text-gray-900">{{ $work->site_on_time ? \Carbon\Carbon::parse($work->site_on_time)->format('h:i A') : '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $work->site_out_time ? \Carbon\Carbon::parse($work->site_out_time)->format('h:i A') : '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $work->travel_end_time ? \Carbon\Carbon::parse($work->travel_end_time)->format('h:i A') : 'Not completed' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($work->total_hours)
@@ -83,7 +112,7 @@
                                 <div class="text-sm text-gray-900 max-w-xs truncate">{{ $work->description ?? '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                @if($work->job_out_time)
+                                @if($work->travel_end_time)
                                     <form action="{{ route('admin.work_approvals.approve', $work->id) }}" method="POST" class="inline-block">
                                         @csrf
                                         <button type="submit" class="text-green-600 hover:text-green-900">
@@ -97,7 +126,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="12" class="px-6 py-8 text-center text-gray-500">
                                 <i class="fas fa-clipboard-check text-4xl mb-3"></i>
                                 <p>No pending work entries.</p>
                             </td>
@@ -116,9 +145,12 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Employee</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Work Partners</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Project</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Job In</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Job Out</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Travel Start</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Site On</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Site Out</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Travel End</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Hours</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Daily Expenses</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Description</th>
@@ -135,14 +167,40 @@
                                 <div class="text-sm font-medium text-gray-900">{{ $work->user->name }}</div>
                                 <div class="text-xs text-gray-500">{{ $work->user->email }}</div>
                             </td>
+                            <td class="px-6 py-4">
+                                @php
+                                    $partners = is_array($work->work_partners) ? $work->work_partners : [];
+                                @endphp
+                                @if(count($partners) > 0)
+                                    <div class="text-xs text-gray-700">
+                                        @foreach($partners as $partnerId)
+                                            @php
+                                                $partner = \App\Models\User::find($partnerId);
+                                            @endphp
+                                            @if($partner)
+                                                <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full mb-1">{{ $partner->name }}</span><br>
+                                            @endif
+                                        @endforeach
+                                        <span class="text-xs text-gray-500">({{ count($partners) }} workers)</span>
+                                    </div>
+                                @else
+                                    <span class="text-xs text-gray-400">Solo</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $work->project->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($work->job_in_time)->format('h:i A') }}</div>
+                                <div class="text-sm text-gray-900">{{ $work->travel_start_time ? \Carbon\Carbon::parse($work->travel_start_time)->format('h:i A') : '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($work->job_out_time)->format('h:i A') }}</div>
+                                <div class="text-sm text-gray-900">{{ $work->site_on_time ? \Carbon\Carbon::parse($work->site_on_time)->format('h:i A') : '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $work->site_out_time ? \Carbon\Carbon::parse($work->site_out_time)->format('h:i A') : '-' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $work->travel_end_time ? \Carbon\Carbon::parse($work->travel_end_time)->format('h:i A') : '-' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ number_format($work->total_hours, 2) }} hrs</div>
@@ -161,7 +219,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="12" class="px-6 py-8 text-center text-gray-500">
                                 <i class="fas fa-clipboard-check text-4xl mb-3"></i>
                                 <p>No approved work entries yet.</p>
                             </td>

@@ -31,6 +31,10 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($employees as $employee)
+                    @php
+                        $netSalary = $employee->salaryMonths->sum('remaining_amount');
+                        $totalDailyExpenses = \App\Models\EmployeeExpense::where('user_id', $employee->id)->sum('amount');
+                    @endphp
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $employee->name }}</div>
@@ -43,12 +47,12 @@
                             <div class="text-sm text-gray-900">Rs {{ number_format($employee->ot_hour_rate ?? 0, 2) }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Rs {{ number_format($employee->daily_expenses ?? 0, 2) }}</div>
+                            <div class="text-sm font-bold text-red-600">- Rs {{ number_format($totalDailyExpenses, 2) }}</div>
+                            @if($totalDailyExpenses > 0)
+                                <div class="text-xs text-gray-500">Total deducted</div>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $netSalary = $employee->salaryMonths->sum('remaining_amount');
-                            @endphp
                             <div class="text-sm font-medium {{ $netSalary > 0 ? 'text-green-600' : 'text-gray-900' }}">
                                 Rs {{ number_format($netSalary, 2) }}
                             </div>
