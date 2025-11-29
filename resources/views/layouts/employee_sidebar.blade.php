@@ -9,9 +9,17 @@
         <ul>
             <li>
                 <a href="{{ route('employee.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('employee/dashboard*') ? 'bg-accent/20 rounded' : '' }}">
-                    <i class="w-5 h-5 fas fa-tachometer-alt {{ request()->is('employee/dashboard*') ? 'text-white' : 'text-accent' }}"></i>
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('employee/dashboard') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-tachometer-alt {{ request()->is('employee/dashboard') ? 'text-white' : 'text-accent' }}"></i>
                     <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('employee.daily_work') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('employee/daily-work*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-clipboard-list {{ request()->is('employee/daily-work*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Daily Work</span>
                 </a>
             </li>
 

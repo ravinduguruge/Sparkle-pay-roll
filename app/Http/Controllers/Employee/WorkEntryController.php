@@ -24,7 +24,7 @@ class WorkEntryController extends Controller
 
         // ensure no other open job
         $existingOpen = WorkEntry::where('user_id', $user->id)
-            ->whereNull('job_out_at')
+            ->whereNull('job_out_time')
             ->first();
 
         if ($existingOpen) {
@@ -35,7 +35,7 @@ class WorkEntryController extends Controller
             'user_id'      => $user->id,
             'project_id'   => $request->project_id,
             'work_date'    => $now->toDateString(),
-            'job_in_at'    => $now,
+            'job_in_time'  => $now,
             'status'       => 'pending', // until admin approves
         ]);
 
@@ -46,7 +46,7 @@ class WorkEntryController extends Controller
     {
         $this->authorizeEntry($workEntry);
 
-        if ($workEntry->job_out_at) {
+        if ($workEntry->job_out_time) {
             abort(403, 'Already job out.');
         }
 
@@ -57,21 +57,29 @@ class WorkEntryController extends Controller
     {
         $this->authorizeEntry($workEntry);
 
-        if ($workEntry->job_out_at) {
+        if ($workEntry->job_out_time) {
             return redirect()->route('employee.dashboard')
                 ->withErrors('You already job out this work.');
         }
 
         $request->validate([
-            'job_description' => 'required|string',
-            'partners'        => 'nullable|string',
+            'description' => 'required|string',
+            'partners'    => 'nullable|string',
             'expense_description.*' => 'nullable|string',
             'expense_amount.*'      => 'nullable|numeric|min:0',
         ]);
 
-        $workEntry->job_description = $request->job_description;
-        $workEntry->partners        = $request->partners;
-        $workEntry->job_out_at      = Carbon::now();
+        $now = Carbon::now();
+        
+        $workEntry->description = $request->description;
+        $workEntry->partners    = $request->partners;
+        $workEntry->job_out_time = $now;
+        
+        // Calculate total hours worked
+        $jobInTime = Carbon::parse($workEntry->job_in_time);
+        $totalHours = $jobInTime->diffInMinutes($now) / 60; // Convert minutes to hours
+        $workEntry->total_hours = round($totalHours, 2);
+        
         $workEntry->save();
 
         // expenses (optional, multiple rows)

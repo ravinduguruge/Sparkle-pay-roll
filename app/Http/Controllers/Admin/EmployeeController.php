@@ -37,6 +37,8 @@ class EmployeeController extends Controller
             'role'  => 'employee',
             'normal_hour_rate' => $request->normal_hour_rate,
             'ot_hour_rate'     => $request->ot_hour_rate,
+            'can_manage_work'  => $request->has('can_manage_work'),
+            'can_add_purchases' => $request->has('can_add_purchases'),
         ]);
 
         return redirect()->route('admin.employees.index')
@@ -57,7 +59,14 @@ class EmployeeController extends Controller
             'ot_hour_rate'     => 'required|numeric|min:0',
         ]);
 
-        $employee->update($request->only('name', 'email', 'normal_hour_rate', 'ot_hour_rate'));
+        $employee->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'normal_hour_rate' => $request->normal_hour_rate,
+            'ot_hour_rate' => $request->ot_hour_rate,
+            'can_manage_work' => $request->has('can_manage_work'),
+            'can_add_purchases' => $request->has('can_add_purchases'),
+        ]);
 
         return redirect()->route('admin.employees.index')->with('success', 'Employee updated.');
     }

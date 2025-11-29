@@ -12,11 +12,16 @@ class WorkEntry extends Model
 
     protected $fillable = [
         'user_id', 'project_id', 'work_date',
-        'job_in_at', 'job_out_at',
-        'job_description', 'partners', 'status',
+        'travel_start_time', 'site_on_time', 'site_out_time', 'travel_end_time',
+        'work_partners', 'total_hours',
+        'description', 'partners', 'status',
     ];
 
-    protected $dates = ['work_date', 'job_in_at', 'job_out_at'];
+    protected $dates = ['work_date', 'travel_start_time', 'site_on_time', 'site_out_time', 'travel_end_time'];
+
+    protected $casts = [
+        'work_partners' => 'array',
+    ];
 
     public function user()
     {

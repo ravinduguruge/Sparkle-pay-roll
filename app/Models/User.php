@@ -24,6 +24,8 @@ class User extends Authenticatable
         'role',
         'normal_hour_rate',
         'ot_hour_rate',
+        'can_manage_work',
+        'can_add_purchases',
     ];
 
 
@@ -48,6 +50,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'can_manage_work' => 'boolean',
+            'can_add_purchases' => 'boolean',
         ];
     }
 

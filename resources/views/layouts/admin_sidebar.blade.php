@@ -40,10 +40,50 @@
             </li>
 
             <li>
+                <a href="{{ route('admin.employee_expenses.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/employee-expenses*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-receipt {{ request()->is('admin/employee-expenses*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Daily Expenses</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ route('admin.salary.index') }}"
                     class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/salary*') ? 'bg-accent/20 rounded' : '' }}">
                     <i class="w-5 h-5 fas fa-money-bill-wave {{ request()->is('admin/salary*') ? 'text-white' : 'text-accent' }}"></i>
                     <span>Salary Management</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.vehicles.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/vehicles*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-car {{ request()->is('admin/vehicles*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Vehicles</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.company_tools.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/company-tools*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-toolbox {{ request()->is('admin/company-tools*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Company Tools</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.company_store.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/company-store*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-warehouse {{ request()->is('admin/company-store*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Company Store</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.other_expense_items.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 transition hover:bg-accent/20 {{ request()->is('admin/other-expense-items*') ? 'bg-accent/20 rounded' : '' }}">
+                    <i class="w-5 h-5 fas fa-file-invoice {{ request()->is('admin/other-expense-items*') ? 'text-white' : 'text-accent' }}"></i>
+                    <span>Expense Items</span>
                 </a>
             </li>
         </ul>
