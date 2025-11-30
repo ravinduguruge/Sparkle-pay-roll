@@ -25,6 +25,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Email</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Normal Rate</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">OT Rate</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Permissions</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -42,6 +43,18 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                                     Rs. {{ number_format($employee->ot_hour_rate, 2) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-600">
+                                    <div class="flex flex-col gap-1">
+                                        <span class="flex items-center">
+                                            <span class="w-2 h-2 rounded-full {{ $employee->can_manage_work ? 'bg-green-500' : 'bg-red-500' }} mr-1"></span>
+                                            Work
+                                        </span>
+                                        <span class="flex items-center">
+                                            <span class="w-2 h-2 rounded-full {{ $employee->can_add_purchases ? 'bg-green-500' : 'bg-red-500' }} mr-1"></span>
+                                            Purchase
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('admin.employees.edit', $employee) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
