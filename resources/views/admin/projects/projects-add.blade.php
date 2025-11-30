@@ -60,6 +60,20 @@
                     <x-input-error :messages="$errors->get('key_employee_amount')" class="mt-1" />
                 </div>
 
+                <!-- Amount Spent -->
+                <div>
+                    <x-input-label for="amount_spent" :value="__('Amount Spent (Rs)')" class="block text-xs font-medium text-slate-700 mb-1" />
+                    <x-text-input id="amount_spent" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" type="number" step="0.01" name="amount_spent" :value="old('amount_spent', 0)" placeholder="0.00" />
+                    <x-input-error :messages="$errors->get('amount_spent')" class="mt-1" />
+                </div>
+
+                <!-- Amount in Hand -->
+                <div>
+                    <x-input-label for="amount_in_hand" :value="__('Amount in Hand (Rs)')" class="block text-xs font-medium text-slate-700 mb-1" />
+                    <x-text-input id="amount_in_hand" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" type="number" step="0.01" name="amount_in_hand" :value="old('amount_in_hand', 0)" placeholder="0.00" />
+                    <x-input-error :messages="$errors->get('amount_in_hand')" class="mt-1" />
+                </div>
+
                 <!-- Status -->
                 <div>
                     <x-input-label for="status" :value="__('Status')" class="block text-xs font-medium text-slate-700 mb-1" />

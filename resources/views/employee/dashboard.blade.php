@@ -52,6 +52,131 @@
         </div>
     </div>
 
+    {{-- Project Financial Information --}}
+    @if($projects && $projects->count() > 0)
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Project Financial Details</h2>
+        <p class="text-sm text-slate-600 mb-4">Select a project to view its financial details</p>
+        
+        {{-- Project Selector --}}
+        <div class="mb-6">
+            <label for="projectSelect" class="block text-sm font-medium text-slate-700 mb-2">Select Project:</label>
+            <select id="projectSelect" class="w-full md:w-1/2 border border-slate-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="showProjectDetails(this.value)">
+                <option value="">-- Select a Project --</option>
+                @foreach($projects as $project)
+                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        {{-- Project Details Container --}}
+        @foreach($projects as $project)
+        <div id="project-{{ $project->id }}" class="project-details" style="display: none;">
+            <div class="border border-slate-200 rounded-lg p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">{{ $project->name }}</h3>
+                        @if($project->key_employee_id == $user->id)
+                            <span class="inline-block px-3 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full mt-2">
+                                <i class="fas fa-user-tie mr-1"></i>You are the Key Employee
+                            </span>
+                        @endif
+                    </div>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full
+                        {{ $project->status === 'active' ? 'bg-green-100 text-green-800' : '' }}
+                        {{ $project->status === 'completed' ? 'bg-blue-100 text-blue-800' : '' }}
+                        {{ $project->status === 'on_hold' ? 'bg-yellow-100 text-yellow-800' : '' }}">
+                        {{ ucfirst(str_replace('_', ' ', $project->status)) }}
+                    </span>
+                </div>
+
+                @if($project->description)
+                <div class="mb-4 pb-4 border-b border-slate-100">
+                    <p class="text-sm text-slate-600">{{ $project->description }}</p>
+                </div>
+                @endif
+
+                {{-- Financial Summary Cards --}}
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    @if($project->key_employee_id == $user->id)
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="text-xs text-green-600 font-semibold uppercase mb-1">Your Allocated Amount</div>
+                        <div class="text-2xl font-bold text-green-700">Rs {{ number_format($project->key_employee_amount ?? 0, 2) }}</div>
+                    </div>
+                    @endif
+                    
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <div class="text-xs text-red-600 font-semibold uppercase mb-1">Amount Spent</div>
+                        <div class="text-2xl font-bold text-red-700">Rs {{ number_format($project->amount_spent ?? 0, 2) }}</div>
+                    </div>
+                    
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="text-xs text-blue-600 font-semibold uppercase mb-1">Amount in Hand</div>
+                        <div class="text-2xl font-bold text-blue-700">Rs {{ number_format($project->amount_in_hand ?? 0, 2) }}</div>
+                    </div>
+                </div>
+
+                {{-- Detailed Breakdown --}}
+                <div class="bg-slate-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-slate-800 mb-3">Financial Breakdown</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center py-2 border-b border-slate-200">
+                {{-- Detailed Breakdown --}}
+                <div class="bg-slate-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-slate-800 mb-3">Financial Breakdown</h4>
+                    <div class="space-y-3">
+                        @if($project->key_employee_id == $user->id)
+                        <div class="flex justify-between items-center py-2 border-b border-slate-200">
+                            <span class="text-sm text-slate-600">Amount Allocated to You:</span>
+                            <span class="font-semibold text-green-600">Rs {{ number_format($project->key_employee_amount ?? 0, 2) }}</span>
+                        </div>
+                        @endif
+                        
+                        <div class="flex justify-between items-center py-2 border-b border-slate-200">
+                            <span class="text-sm text-slate-600">Total Amount Spent:</span>
+                            <span class="font-semibold text-red-600">Rs {{ number_format($project->amount_spent ?? 0, 2) }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between items-center py-2 border-b border-slate-200">
+                            <span class="text-sm text-slate-600">Amount in Hand (Cash):</span>
+                            <span class="font-semibold text-blue-600">Rs {{ number_format($project->amount_in_hand ?? 0, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                @if($project->keyEmployee)
+                <div class="mt-4 pt-4 border-t border-slate-200">
+                    <p class="text-xs text-slate-500">
+                        <i class="fas fa-user-tie mr-1"></i>
+                        Key Employee: <span class="font-semibold">{{ $project->keyEmployee->name }}</span>
+                        ({{ $project->keyEmployee->email }})
+                    </p>
+                </div>
+                @endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+    <script>
+    function showProjectDetails(projectId) {
+        // Hide all project details
+        const allProjects = document.querySelectorAll('.project-details');
+        allProjects.forEach(project => {
+            project.style.display = 'none';
+        });
+        
+        // Show selected project details
+        if (projectId) {
+            const selectedProject = document.getElementById('project-' + projectId);
+            if (selectedProject) {
+                selectedProject.style.display = 'block';
+            }
+        }
+    }
+    </script>
+    @endif
+
     {{-- Quick Actions --}}
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <h2 class="text-xl font-bold text-slate-800 mb-4">Quick Actions</h2>

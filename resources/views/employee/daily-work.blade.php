@@ -4,6 +4,18 @@
 <div class="p-6">
     <h1 class="text-3xl font-bold text-slate-800 mb-6">Daily Work Entry</h1>
 
+    {{-- Error Messages --}}
+    @if($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-6 rounded-md">
+            <p class="font-medium mb-2">Please fix the following errors:</p>
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     {{-- Today's Work Section - Full Width --}}
     <div class="mb-6">
         <div class="bg-white rounded-2xl shadow-lg p-6">
@@ -85,6 +97,7 @@
                             </svg>
                             Refreshments *
                         </h3>
+
                         
                         <div id="refreshments-container">
                             <div class="refreshment-item grid md:grid-cols-3 gap-3 mb-3">
@@ -132,11 +145,11 @@
                                 </div>
                                 <div class="distance-field">
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Distance (km) *</label>
-                                    <input type="number" name="vehicle_distance[]" step="0.1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.0">
+                                    <input type="number" name="vehicle_distance[]" step="0.1" required class="distance-input w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.0">
                                 </div>
                                 <div class="bus-amount-field" style="display: none;">
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Ticket Amount (Rs.) *</label>
-                                    <input type="number" name="bus_amount[]" step="0.01" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00">
+                                    <input type="number" name="bus_amount[]" step="0.01" class="bus-amount-input w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00">
                                 </div>
                             </div>
                         </div>
@@ -248,11 +261,11 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
-                                    <input type="number" name="purchase_quantity[]" min="1" step="1" class="purchase-quantity w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="1" value="1" onchange="updatePurchaseTotal(this)">
+                                    <input type="number" name="purchase_quantity[]" min="1" step="1" class="purchase-quantity w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="1" value="1" oninput="updatePurchaseTotal(this)">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Unit Price (Rs.)</label>
-                                    <input type="number" name="purchase_unit_price[]" step="0.01" class="purchase-unit-price w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00" readonly>
+                                    <input type="number" name="purchase_unit_price[]" step="0.01" class="purchase-unit-price w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00" oninput="updatePurchaseTotal(this)" readonly>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1">Total Amount (Rs.)</label>
@@ -334,12 +347,12 @@ function addVehicle() {
         </div>
         <div class="distance-field">
             <label class="block text-sm font-medium text-slate-700 mb-1">Distance (km) *</label>
-            <input type="number" name="vehicle_distance[]" step="0.1" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.0">
+            <input type="number" name="vehicle_distance[]" step="0.1" required class="distance-input w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.0">
         </div>
         <div class="bus-amount-field" style="display: none;">
             <label class="block text-sm font-medium text-slate-700 mb-1">Ticket Amount (Rs.) *</label>
             <div class="flex gap-2">
-                <input type="number" name="bus_amount[]" step="0.01" required class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00">
+                <input type="number" name="bus_amount[]" step="0.01" class="bus-amount-input w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00">
                 <button type="button" onclick="this.closest('.vehicle-item').remove()" class="text-red-600 hover:text-red-800">×</button>
             </div>
         </div>
@@ -354,16 +367,27 @@ function toggleDistanceField(select) {
     
     const distanceField = parent.querySelector('.distance-field');
     const busAmountField = parent.querySelector('.bus-amount-field');
+    const distanceInput = parent.querySelector('.distance-input');
+    const busAmountInput = parent.querySelector('.bus-amount-input');
     
     if (type === 'bus') {
         distanceField.style.display = 'none';
         busAmountField.style.display = 'block';
+        // Remove required from distance, add to bus amount
+        if (distanceInput) distanceInput.removeAttribute('required');
+        if (busAmountInput) busAmountInput.setAttribute('required', 'required');
     } else if (type === 'company') {
         distanceField.style.display = 'block';
         busAmountField.style.display = 'none';
+        // Add required to distance, remove from bus amount
+        if (distanceInput) distanceInput.setAttribute('required', 'required');
+        if (busAmountInput) busAmountInput.removeAttribute('required');
     } else {
         distanceField.style.display = 'none';
         busAmountField.style.display = 'none';
+        // Remove required from both
+        if (distanceInput) distanceInput.removeAttribute('required');
+        if (busAmountInput) busAmountInput.removeAttribute('required');
     }
 }
 
@@ -427,11 +451,11 @@ function addPurchase() {
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
-            <input type="number" name="purchase_quantity[]" min="1" step="1" class="purchase-quantity w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="1" value="1" onchange="updatePurchaseTotal(this)">
+            <input type="number" name="purchase_quantity[]" min="1" step="1" class="purchase-quantity w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="1" value="1" oninput="updatePurchaseTotal(this)">
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Unit Price (Rs.)</label>
-            <input type="number" name="purchase_unit_price[]" step="0.01" class="purchase-unit-price w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00" readonly>
+            <input type="number" name="purchase_unit_price[]" step="0.01" class="purchase-unit-price w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" placeholder="0.00" oninput="updatePurchaseTotal(this)" readonly>
         </div>
         <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Total Amount (Rs.)</label>

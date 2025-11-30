@@ -30,6 +30,8 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Key Employee Amount</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Total Budget</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Advance Payment</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Amount Spent</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Amount in Hand</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Remaining Budget</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Actions</th>
@@ -62,6 +64,12 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">Rs {{ number_format($project->advance_payment ?? 0, 2) }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-red-600">Rs {{ number_format($project->amount_spent ?? 0, 2) }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-blue-600">Rs {{ number_format($project->amount_in_hand ?? 0, 2) }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium {{ $project->remaining_budget > 0 ? 'text-green-600' : 'text-red-600' }}">
@@ -98,7 +106,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                        <td colspan="11" class="px-6 py-8 text-center text-gray-500">
                             <i class="fas fa-folder-open text-4xl mb-3"></i>
                             <p>No projects found. Add your first project to get started.</p>
                         </td>

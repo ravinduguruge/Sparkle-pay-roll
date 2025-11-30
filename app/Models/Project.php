@@ -11,7 +11,8 @@ class Project extends Model
 
     protected $fillable = [
         'name', 'description', 'key_employee_id', 'total_budget',
-        'advance_payment', 'key_employee_amount', 'remaining_budget', 'status',
+        'advance_payment', 'key_employee_amount', 'remaining_budget', 
+        'amount_spent', 'amount_in_hand', 'status',
     ];
 
     public function keyEmployee()

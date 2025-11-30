@@ -30,10 +30,28 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
+        // Get projects where user is key employee or has worked on
+        $keyProjects = Project::where('key_employee_id', $user->id)
+            ->where('status', 'active')
+            ->get();
+        
+        // Get projects user has worked on
+        $workedProjectIds = WorkEntry::where('user_id', $user->id)
+            ->distinct()
+            ->pluck('project_id');
+        
+        $workedProjects = Project::whereIn('id', $workedProjectIds)
+            ->where('status', 'active')
+            ->get();
+        
+        // Merge and get unique projects
+        $allProjects = $keyProjects->merge($workedProjects)->unique('id');
+
         return view('employee.dashboard', [
             'user'          => $user,
             'netSalary'     => $netSalary,
             'recentWork'    => $recentWork,
+            'projects'      => $allProjects,
         ]);
     }
 

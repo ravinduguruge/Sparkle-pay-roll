@@ -15,6 +15,36 @@ class ProjectController extends Controller
         return view('admin.projects.projects-details', compact('projects'));
     }
 
+    public function show(Project $project)
+    {
+        // Get all work entries for this project with employee details
+        $workEntries = $project->workEntries()
+            ->with(['user', 'workExpenses'])
+            ->orderBy('work_date', 'desc')
+            ->get();
+        
+        // Calculate total expenses per employee for this project
+        $employeeExpenses = [];
+        foreach ($workEntries as $entry) {
+            $userId = $entry->user_id;
+            $userName = $entry->user->name;
+            
+            if (!isset($employeeExpenses[$userId])) {
+                $employeeExpenses[$userId] = [
+                    'name' => $userName,
+                    'email' => $entry->user->email,
+                    'total_expenses' => 0,
+                    'work_count' => 0,
+                ];
+            }
+            
+            $employeeExpenses[$userId]['work_count']++;
+            $employeeExpenses[$userId]['total_expenses'] += $entry->workExpenses->sum('amount');
+        }
+        
+        return view('admin.projects.project-show', compact('project', 'employeeExpenses', 'workEntries'));
+    }
+
     public function create()
     {
         $employees = User::where('role', 'employee')->orderBy('name')->get();
